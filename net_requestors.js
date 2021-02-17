@@ -6,6 +6,7 @@ import {
     get,
     createServer
 } from "https";
+import WebSocket from "ws";
 
 /*
 Comm requestors:
@@ -125,7 +126,7 @@ const server_connection_listen = function (options) {
     };
 };
 
-const server_event_listen = function ({
+const event_listen = function ({
     event_name,
     listener,
     once = false
@@ -133,11 +134,11 @@ const server_event_listen = function ({
     return function event_listen_requestor (callback) {
         return function (server) {
             try {
-                callback((
+                callback(
                     (once === true)
-                    ? server.once
-                    : server.on
-                )(event_name, listener));
+                    ? server.once(event_name, listener)
+                    : server.on(event_name, listener)
+                );
             } catch (exception) {
                 callback (undefined, exception.message);
             }
@@ -198,10 +199,22 @@ const https_get = function (options = {}) {
     };
 };
 
+const ws_create_server = function websocket_create_server_requestor (callback) {
+    return function (options) {
+        try {
+            const wss = new WebSocket.Server(options);
+            callback(wss);
+        } catch (exception) {
+            callback(undefined, exception.message);
+        }
+    };
+};
+
 export {
     https_get,
     https_create_server,
     server_close,
     server_connection_listen,
-    server_event_listen
+    event_listen,
+    ws_create_server
 };

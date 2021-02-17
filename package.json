@@ -1,6 +1,6 @@
 {
   "name": "@jlrwi/net_requestors",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Parseq-style requestors for Node http/https methods",
   "main": "net_requestors.js",
   "scripts": {
@@ -8,5 +8,12 @@
   },
   "author": "Jonathan Reimer",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "ws": "^7.4.0"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.2",
+    "utf-8-validate": "^5.0.3"
+  }
 }
