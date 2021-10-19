@@ -10,7 +10,7 @@ import WebSocket from "ws";
 
 //MD # net-requestors/p
 //MD Requestors in [curried-parseq](https://github.com/jlrwi/curried-parseq)
-//MD style for Node http/https methods/p
+//MD style for Node http/https/ws methods/p
 //MD /p
 
 /*
@@ -84,8 +84,8 @@ Properties:
 
 //MD ## https_create_server/p
 //MD Implementation of https.createServer. Callback receives the server./p
-//MD     https_create_server(callback)(options)/p
 //MD /p
+//MD     https_create_server(callback)(options)/p
 const https_create_server = function (callback) {
     return function (options) {
         try {
@@ -99,8 +99,8 @@ const https_create_server = function (callback) {
 //MD ## server_close/p
 //MD Invoke the .close() method on a server object.
 //MD Callback receives the server./p
-//MD     server_close(callback)(server)/p
 //MD /p
+//MD     server_close(callback)(server)/p
 const server_close = function (callback) {
     return function (server) {
 
@@ -120,8 +120,8 @@ const server_close = function (callback) {
 //MD ## server_connection_listen/p
 //MD Invoke the .listen() method on a server object.
 //MD Callback receives the server./p
-//MD     server_connection_listen(options)(callback)(server)/p
 //MD /p
+//MD     server_connection_listen(options)(callback)(server)/p
 const server_connection_listen = function (options) {
     return function connection_listen_requestor(callback) {
         return function (server) {
@@ -136,6 +136,7 @@ const server_connection_listen = function (options) {
 
 //MD ## event_listen/p
 //MD Invoke .on() or .once() on a server object. Callback receives the server./p
+//MD /p
 //MD     https_create_server(options)(callback)(server)/p
 //MD /p
 //MD Options object properties:/p
@@ -165,6 +166,7 @@ const event_listen = function ({
 //MD ## https_get/p
 //MD Implementation of https.get(). Returns a cancel function.
 //MD Callback receives a buffer./p
+//MD /p
 //MD     https_get(options)(callback)(url)/p
 const https_get = function (options = {}) {
     return function https_get_requestor(callback) {
@@ -219,6 +221,7 @@ const https_get = function (options = {}) {
 
 //MD ## ws_create_server/p
 //MD Implementation of `new WebSocket.Server()`. Callback receives the server./p
+//MD /p
 //MD     ws_create_server(callback)(options)/p
 const ws_create_server = function (callback) {
     return function (options) {
