@@ -9,17 +9,6 @@ import {
 import WebSocket from "ws";
 
 /*
-Comm requestors:
-HTTP request -> response (client side)
-
-server side:
-    a request is simply a function call to generate a response
-        which may be async
-
-    pushing data to clients would need a requestor (awaiting ack of push?)
-*/
-
-/*
 https.server is an EventEmitter
 
 Events:
@@ -88,7 +77,7 @@ Properties:
 .rawListeners() - copy of array of listeners for an event
 */
 
-const https_create_server = function https_create_server_requestor (callback) {
+const https_create_server = function (callback) {
     return function (options) {
         try {
             callback(createServer(options));
@@ -98,11 +87,11 @@ const https_create_server = function https_create_server_requestor (callback) {
     };
 };
 
-const server_close = function close_server_requestor (callback) {
+const server_close = function (callback) {
     return function (server) {
 
 // If server was already closed, node returns an error
-        const node_callback = function (ignore) {
+        const node_callback = function () {
             callback(server);
         };
 
@@ -115,7 +104,7 @@ const server_close = function close_server_requestor (callback) {
 };
 
 const server_connection_listen = function (options) {
-    return function connection_listen_requestor (callback) {
+    return function connection_listen_requestor(callback) {
         return function (server) {
             try {
                 callback(server.listen(options));
@@ -131,7 +120,7 @@ const event_listen = function ({
     listener,
     once = false
 }) {
-    return function event_listen_requestor (callback) {
+    return function event_listen_requestor(callback) {
         return function (server) {
             try {
                 callback(
@@ -140,19 +129,17 @@ const event_listen = function ({
                     : server.on(event_name, listener)
                 );
             } catch (exception) {
-                callback (undefined, exception.message);
+                callback(undefined, exception.message);
             }
         };
     };
 };
 
-// url -> Buffer
 const https_get = function (options = {}) {
-    return function https_get_requestor (callback) {
+    return function https_get_requestor(callback) {
         return function (url) {
 
             const response_handler = function (res) {
-
                 let data = [];
 
                 res.on("data", function (chunk) {
@@ -179,17 +166,17 @@ const https_get = function (options = {}) {
                 res.on("aborted", function () {
                     callback(undefined, "Request aborted");
                 });
-
             };
 
             try {
                 const req = get(url, options, response_handler);
 
                 req.on("error", function (e) {
-                    callback (undefined, e.message);
+                    callback(undefined, e.message);
                 });
 
-                return function (ignore) {
+// Return a cancel function
+                return function () {
                     req.abort();
                 };
             } catch (exception) {
@@ -199,7 +186,7 @@ const https_get = function (options = {}) {
     };
 };
 
-const ws_create_server = function websocket_create_server_requestor (callback) {
+const ws_create_server = function (callback) {
     return function (options) {
         try {
             const wss = new WebSocket.Server(options);
